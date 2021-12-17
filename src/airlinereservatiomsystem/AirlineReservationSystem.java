@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package airlinereservatiomsystem;
+package airline.reservation.system;
 
 /**
  *
  * @author aliar
  */
-public class AirlineReservatiomSystem {
+public class AirlineReservationSystem {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Login().setVisible(true);
-        
+        // TODO code application logic here
+        new LoaderPage().setVisible(true);
     }
     
 }
