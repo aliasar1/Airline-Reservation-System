@@ -213,6 +213,8 @@ public class LoginPage extends javax.swing.JFrame {
             else{
                 JOptionPane.showMessageDialog(null, "Invalid username or password.");
             }
+            username.setText("");
+            password.setText("");
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
