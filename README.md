@@ -1,2 +1,2 @@
 # Airline-Reservation-System
-This is our DATA STRUCTURE AND ALGORITHM course project implemented using GUI.
+This is implemented using GUI so manage flights efficiently.
