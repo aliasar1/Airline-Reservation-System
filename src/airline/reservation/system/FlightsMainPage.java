@@ -6,6 +6,21 @@
 package airline.reservation.system;
 
 import com.raven.event.EventTimePicker;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.sqlite.JDBC;
 
 /**
  *
@@ -16,18 +31,29 @@ public class FlightsMainPage extends javax.swing.JFrame {
     /**
      * Creates new form FlightsMainPage
      */
+    
+    private Connection connection;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    Statement st = null;
+   
     public FlightsMainPage() {
         initComponents();
+        initTimePickers();
+        displayFlights();
+    }
+    
+    private void initTimePickers(){
         timePicker1.addEventTimePicker(new EventTimePicker() {
             @Override
             public void timeSelected(String string) {
-                time1.setText(timePicker1.getSelectedTime());
+                deptTimeField.setText(timePicker1.getSelectedTime());
             }
         });
         timePicker2.addEventTimePicker(new EventTimePicker() {
             @Override
             public void timeSelected(String string) {
-                time2.setText(timePicker2.getSelectedTime());
+                arrTimeField.setText(timePicker2.getSelectedTime());
             }
         });
     }
@@ -58,18 +84,18 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        FCode = new javax.swing.JTextField();
+        fromField = new javax.swing.JTextField();
+        toField = new javax.swing.JTextField();
+        deptDateField = new com.toedter.calendar.JDateChooser();
+        seatsField = new javax.swing.JTextField();
+        priceField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        flightTable = new javax.swing.JTable();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        time1 = new javax.swing.JTextField();
-        time2 = new javax.swing.JTextField();
+        deptTimeField = new javax.swing.JTextField();
+        arrTimeField = new javax.swing.JTextField();
 
         timePicker1.setForeground(new java.awt.Color(123, 50, 250));
 
@@ -134,6 +160,11 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton2.setFocusPainted(false);
         jButton2.setFocusable(false);
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -145,6 +176,11 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jButton3.setText("REMOVE");
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton3.setFocusable(false);
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(255, 255, 255));
         jButton4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -167,7 +203,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jLabel2.setText("Flight ID");
+        jLabel2.setText("Flight Code");
 
         jLabel4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel4.setText("From");
@@ -184,33 +220,43 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel3.setText("Price of seat");
 
-        jTextField1.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        FCode.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        FCode.setName("flightID"); // NOI18N
+        FCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FCodeActionPerformed(evt);
+            }
+        });
 
-        jTextField2.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        fromField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        fromField.setName("from"); // NOI18N
 
-        jTextField3.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        toField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        toField.setName("to"); // NOI18N
 
-        jTextField4.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        deptDateField.setName("deptDate"); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        seatsField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        seatsField.setName("seats"); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        priceField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        priceField.setName("price"); // NOI18N
+
+        flightTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Flight ID", "From", "To", "DepDate", "NumOfSeats", "PriceSeat"
+                "Flight ID", "Code", "From", "To", "DepDate", "NoOfSeats", "PriceSeat", "DeptTime", "ArrTime"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        ));
+        flightTable.setName("FlightsTable"); // NOI18N
+        flightTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                flightTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(flightTable);
 
         jButton6.setBackground(new java.awt.Color(255, 255, 255));
         jButton6.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -234,12 +280,15 @@ public class FlightsMainPage extends javax.swing.JFrame {
             }
         });
 
-        time1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        time1.addActionListener(new java.awt.event.ActionListener() {
+        deptTimeField.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        deptTimeField.setName("deptTime"); // NOI18N
+        deptTimeField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                time1ActionPerformed(evt);
+                deptTimeFieldActionPerformed(evt);
             }
         });
+
+        arrTimeField.setName("arrTime"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -253,52 +302,56 @@ public class FlightsMainPage extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel4))
-                                .addGap(68, 68, 68)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(1, 1, 1)))
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGap(27, 27, 27)
-                                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addComponent(jLabel6)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel8)
-                                            .addComponent(jLabel7))
-                                        .addGap(18, 18, 18)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(time1)
-                                            .addComponent(time2))))
-                                .addGap(26, 26, 26)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18))
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(1, 1, 1)))
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                                        .addGap(27, 27, 27)
+                                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jLabel6)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jLabel8)
+                                                    .addComponent(jLabel7))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(seatsField, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                                    .addComponent(deptDateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(deptTimeField)
+                                                    .addComponent(arrTimeField))))
+                                        .addGap(10, 10, 10))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(fromField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(FCode, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(17, 17, 17)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(115, 115, 115)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -313,35 +366,35 @@ public class FlightsMainPage extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(FCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(fromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(deptDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(seatsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton6)
-                            .addComponent(time1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(deptTimeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton7)
-                            .addComponent(time2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(arrTimeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(25, 25, 25)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(30, 30, 30)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -388,9 +441,47 @@ public class FlightsMainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here: 
+        if(FCode.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
+                deptDateField.getDate().toString().isEmpty() || seatsField.getText().isEmpty() || deptTimeField.getText().isEmpty() || arrTimeField.getText().isEmpty() || priceField.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else{
+            try {
+                generateFlightID();
+                String addFlightQuery = "INSERT INTO `Flights` (FlightId, FCode, Ffrom, Fto, deptDate, seats, deptTime, arrTime, price) VALUES ('"
+                                +
+                                currentFlightID + "','" +
+                                FCode.getText() + "','" +
+                                fromField.getText() + "','" +
+                                toField.getText() + "','" +
+                                deptDateField.getDate().toString() + "','" +
+                                Integer.parseInt(seatsField.getText()) + "','" +
+                                deptTimeField.getText() + "','" +
+                                arrTimeField.getText() + "','" +
+                                Integer.parseInt(priceField.getText()) + "');";
+                System.out.println(addFlightQuery);
+                st.executeUpdate(addFlightQuery);
+                clearFields();
+                displayFlights();
+                JOptionPane.showMessageDialog(null, "Flight Record added successfully.");
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void clearFields(){
+        FCode.setText("");
+        fromField.setText("");
+        toField.setText("");
+        seatsField.setText("");
+        priceField.setText("");
+        deptDateField.setDate(null);
+        initTimePickers();
+    }
+    
     private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
         // TODO add your handling code here:
         timePicker1.showPopup(this, 100,100);
@@ -401,10 +492,107 @@ public class FlightsMainPage extends javax.swing.JFrame {
         timePicker2.showPopup(this, 100,100);
     }//GEN-LAST:event_jButton7MouseClicked
 
-    private void time1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_time1ActionPerformed
+    private void deptTimeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deptTimeFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_time1ActionPerformed
+    }//GEN-LAST:event_deptTimeFieldActionPerformed
 
+    private void FCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FCodeActionPerformed
+    
+    int key = 0;
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        // TODO add your handling code here:
+        if(key == 0){
+            JOptionPane.showMessageDialog(null, "Please select a record to be deleted.");
+        }   
+        else{
+            try {
+                java.sql.DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+                String delQuery = "DELETE FROM Flights WHERE FlightID = " + key + ";";
+                pst = connection.prepareStatement(delQuery);
+                pst.executeUpdate();
+                displayFlights();
+                clearFields();
+                JOptionPane.showMessageDialog(null, "Record of flight deleted successfully.");
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void flightTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flightTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) flightTable.getModel();
+        int tableIndex = flightTable.getSelectedRow();
+        key = Integer.valueOf(model.getValueAt(tableIndex, 0).toString());
+        FCode.setText(model.getValueAt(tableIndex, 1).toString());
+        fromField.setText(model.getValueAt(tableIndex, 2).toString());
+        toField.setText(model.getValueAt(tableIndex, 3).toString());
+        seatsField.setText(model.getValueAt(tableIndex, 5).toString());
+        deptTimeField.setText(model.getValueAt(tableIndex, 6).toString());
+        arrTimeField.setText(model.getValueAt(tableIndex, 7).toString());
+        priceField.setText(model.getValueAt(tableIndex, 8).toString());
+    }//GEN-LAST:event_flightTableMouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    
+    
+    private void displayFlights(){
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            DefaultTableModel model = (DefaultTableModel) flightTable.getModel();
+            model.setRowCount(0);
+            if(connection != null){
+                String query = "SELECT * FROM FLIGHTS";
+                pst = connection.prepareStatement(query);
+                rs = pst.executeQuery();
+              
+                Object[] data = new Object[9];
+                while(rs.next()){
+                    data[0] = rs.getString("FlightId");
+                    data[1] = rs.getString("FCode");
+                    data[2] = rs.getString("Ffrom");
+                    data[3] = rs.getString("Fto");
+                    data[4] = rs.getString("deptDate");
+                    data[5] = rs.getString("Seats");
+                    data[6] = rs.getString("deptTIme");
+                    data[7] = rs.getString("arrTime");
+                    data[8] = rs.getString("price");
+                    model.addRow(data);
+                }
+            }
+            connection.close();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    
+    private int currentFlightID = 0;
+    private void generateFlightID(){
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            st = connection.createStatement();
+            String query = "SELECT MAX(FlightID) FROM Flights";
+            System.out.println(currentFlightID);
+            rs = st.executeQuery(query);
+            rs.next();
+            currentFlightID = rs.getInt(1) + 1;
+            System.out.println(currentFlightID);
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -441,6 +629,12 @@ public class FlightsMainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField FCode;
+    private javax.swing.JTextField arrTimeField;
+    private com.toedter.calendar.JDateChooser deptDateField;
+    private javax.swing.JTextField deptTimeField;
+    private javax.swing.JTable flightTable;
+    private javax.swing.JTextField fromField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -448,7 +642,6 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -460,15 +653,10 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField time1;
-    private javax.swing.JTextField time2;
+    private javax.swing.JTextField priceField;
+    private javax.swing.JTextField seatsField;
     private com.raven.swing.TimePicker timePicker1;
     private com.raven.swing.TimePicker timePicker2;
+    private javax.swing.JTextField toField;
     // End of variables declaration//GEN-END:variables
 }

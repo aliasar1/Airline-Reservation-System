@@ -8,6 +8,7 @@ package airline.reservation.system;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 import org.sqlite.JDBC;
 
@@ -30,6 +31,7 @@ public class AirlineReservationSystem {
         connect();
     }
     
+    
     public static void connect() {
         File dbFile = new File("airlineDB.db");
         boolean dbCreated = dbFile.exists();
@@ -45,5 +47,6 @@ public class AirlineReservationSystem {
             e.printStackTrace();
         }
     }
+    
     
 }
