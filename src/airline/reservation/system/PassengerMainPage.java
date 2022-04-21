@@ -9,7 +9,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.sqlite.JDBC;
@@ -27,9 +32,11 @@ public class PassengerMainPage extends javax.swing.JFrame {
     ResultSet rs = null;
     PreparedStatement pst = null;
     Statement st = null;
+    int key = 0;  
     
     public PassengerMainPage() {
         initComponents();
+        displayPassengers();
     }
 
     /**
@@ -67,6 +74,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
         passIDField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         passengerTable = new javax.swing.JTable();
+        clearBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -95,6 +103,16 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton2.setFocusPainted(false);
         jButton2.setFocusable(false);
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -102,9 +120,19 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton3.setFocusPainted(false);
         jButton3.setFocusable(false);
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
+            }
+        });
+        jButton3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButton3KeyPressed(evt);
             }
         });
 
@@ -114,6 +142,11 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton4.setFocusPainted(false);
         jButton4.setFocusable(false);
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(123, 50, 250));
         jButton5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -200,7 +233,30 @@ public class PassengerMainPage extends javax.swing.JFrame {
                 "Passenger ID", "Passenger Name", "Passport Number", "Gender", "Nationality", "From", "To"
             }
         ));
+        passengerTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                passengerTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(passengerTable);
+
+        clearBtn.setBackground(new java.awt.Color(123, 50, 250));
+        clearBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        clearBtn.setForeground(new java.awt.Color(255, 255, 255));
+        clearBtn.setText("CLEAR");
+        clearBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(123, 50, 250)));
+        clearBtn.setFocusPainted(false);
+        clearBtn.setFocusable(false);
+        clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clearBtnMouseClicked(evt);
+            }
+        });
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -233,20 +289,19 @@ public class PassengerMainPage extends javax.swing.JFrame {
                                 .addGap(53, 53, 53)
                                 .addComponent(passIDField, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(idGeneratorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(81, 81, 81)
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(idGeneratorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -298,7 +353,9 @@ public class PassengerMainPage extends javax.swing.JFrame {
                             .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 19, Short.MAX_VALUE))))
         );
 
@@ -398,7 +455,10 @@ public class PassengerMainPage extends javax.swing.JFrame {
         }
         else{
             try {
-                String addPassQuery = "INSERT INTO `Passengers` (passID, pName, Gender, passNum, nationality, from, to, status) VALUES ('"
+                java.sql.DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+                
+                String addPassQuery = "INSERT INTO `Passengers` (passID, pName, Gender, passNum, nationality, Pfrom, Pto, status) VALUES ('"
                                 +
                                 passIDField.getText() + "','" +
                                 PNameField.getText()+ "','" +
@@ -412,8 +472,8 @@ public class PassengerMainPage extends javax.swing.JFrame {
                 st.executeUpdate(addPassQuery);
                 clearFields();
                 displayPassengers();
-                JOptionPane.showMessageDialog(null, "Passenger Record added successfully.");
                 connection.close();
+                JOptionPane.showMessageDialog(null, "Passenger Record added successfully.");     
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -426,6 +486,116 @@ public class PassengerMainPage extends javax.swing.JFrame {
         generatePassID();
         passIDField.setText(Integer.toString(currentPassID));
     }//GEN-LAST:event_idGeneratorBtnMouseClicked
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
+        // TODO add your handling code here:
+        clearFields();
+    }//GEN-LAST:event_clearBtnMouseClicked
+
+    private void passengerTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passengerTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) passengerTable.getModel();
+        int tableIndex = passengerTable.getSelectedRow();
+        key = Integer.valueOf(model.getValueAt(tableIndex, 0).toString());
+        PNameField.setText(model.getValueAt(tableIndex, 1).toString());
+        PNum.setText(model.getValueAt(tableIndex, 2).toString());
+        genderCMBox.setSelectedItem(model.getValueAt(tableIndex, 3));
+        nationalityField.setText(model.getValueAt(tableIndex, 4).toString());
+        fromField.setText(model.getValueAt(tableIndex, 5).toString());
+        toField.setText(model.getValueAt(tableIndex, 6).toString());
+        passIDField.setText(model.getValueAt(tableIndex, 0).toString());
+    }//GEN-LAST:event_passengerTableMouseClicked
+
+    private void jButton3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton3KeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton3KeyPressed
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        // TODO add your handling code here:
+        if(key == 0){
+            JOptionPane.showMessageDialog(null, "Please select a record to be deleted.");
+        }   
+        else{
+            try {
+                java.sql.DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+                String delQuery = "DELETE FROM Passengers WHERE PassID = " + key + ";";
+                pst = connection.prepareStatement(delQuery);
+                pst.executeUpdate();
+                displayPassengers();
+                clearFields();
+                JOptionPane.showMessageDialog(null, "Record of passenger deleted successfully.");
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        if(PNameField.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
+                genderCMBox.getSelectedIndex() == -1 || nationalityField.getText().isEmpty() || PNum.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else{
+            if(key == 0){
+                JOptionPane.showMessageDialog(null, "Please select a record to be updated.");
+            }   
+            else{
+                try {
+                    java.sql.DriverManager.registerDriver(new JDBC());
+                    connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+                    
+                    String updateQuery = "UPDATE Passengers SET pName ="+ '"' +PNameField.getText()+ '"' + ", Gender="+ '"' +genderCMBox.getSelectedItem()+ '"' +
+                            ", nationality="+ '"' +nationalityField.getText()+ '"' +", Pfrom="+ '"' +fromField.getText()+ '"' +", Pto="+ '"' +toField.getText()+ '"' +", status="+ '"' +"Unpaid"+ '"' +" WHERE passID ="+ '"' +key+ '"' +";";
+                    System.out.println(updateQuery);
+
+                    pst = connection.prepareStatement(updateQuery);
+                    pst.executeUpdate();
+                    displayPassengers();
+                    clearFields();
+                    JOptionPane.showMessageDialog(null, "Record of passenger updated successfully.");
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }                                            
+
+    private void searchRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {                                             
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        // TODO add your handling code here:
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            String searchQuery = "SELECT * FROM Passengers WHERE passNum ="+ '"' +PNum.getText()+ '"' +";";
+            System.out.println(searchQuery);
+            pst = connection.prepareStatement(searchQuery);
+            rs = pst.executeQuery();
+            passIDField.setText(rs.getString(7));
+            PNameField.setText(rs.getString(1));
+            genderCMBox.setSelectedItem(rs.getString(2));
+            nationalityField.setText(rs.getString(4));
+            fromField.setText(rs.getString(5));
+            toField.setText(rs.getString(6));
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4MouseClicked
 
     
     private void clearFields(){
@@ -456,8 +626,8 @@ public class PassengerMainPage extends javax.swing.JFrame {
                     data[2] = rs.getString("passNum");
                     data[3] = rs.getString("Gender");
                     data[4] = rs.getString("nationality");
-                    data[5] = rs.getString("from");
-                    data[6] = rs.getString("to");
+                    data[5] = rs.getString("Pfrom");
+                    data[6] = rs.getString("Pto");
                     model.addRow(data);
                 }
             }
@@ -466,7 +636,8 @@ public class PassengerMainPage extends javax.swing.JFrame {
         catch(Exception ex){
             System.out.println(ex.getMessage());
         }
-    }
+    }                                           
+
     /**
      * @param args the command line arguments
      */
@@ -505,6 +676,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PNameField;
     private javax.swing.JTextField PNum;
+    private javax.swing.JButton clearBtn;
     private javax.swing.JTextField fromField;
     private javax.swing.JComboBox<String> genderCMBox;
     private javax.swing.JButton idGeneratorBtn;

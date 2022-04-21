@@ -622,6 +622,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
             deptTimeField.setText(rs.getString(6));
             arrTimeField.setText(rs.getString(7));
             priceField.setText(rs.getString(8));
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
         }
