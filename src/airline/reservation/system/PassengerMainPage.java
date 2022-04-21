@@ -5,6 +5,15 @@
  */
 package airline.reservation.system;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.sqlite.JDBC;
+
 /**
  *
  * @author aliar
@@ -14,6 +23,11 @@ public class PassengerMainPage extends javax.swing.JFrame {
     /**
      * Creates new form PassengerMainPage
      */
+    private Connection connection;
+    ResultSet rs = null;
+    PreparedStatement pst = null;
+    Statement st = null;
+    
     public PassengerMainPage() {
         initComponents();
     }
@@ -42,17 +56,17 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
+        PNameField = new javax.swing.JTextField();
+        PNum = new javax.swing.JTextField();
+        genderCMBox = new javax.swing.JComboBox<>();
+        nationalityField = new javax.swing.JTextField();
+        fromField = new javax.swing.JTextField();
+        toField = new javax.swing.JTextField();
+        idGeneratorBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        passIDField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        passengerTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -69,17 +83,22 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton1.setFocusPainted(false);
         jButton1.setFocusable(false);
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton2.setText("EDIT");
+        jButton2.setText("UPDATE");
         jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton2.setFocusPainted(false);
         jButton2.setFocusable(false);
 
         jButton3.setBackground(new java.awt.Color(255, 255, 255));
         jButton3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton3.setText("REMOVE");
+        jButton3.setText("DELETE");
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jButton3.setFocusPainted(false);
         jButton3.setFocusable(false);
@@ -127,65 +146,61 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel8.setText("Nationality");
 
-        jTextField1.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        PNameField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        PNum.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
 
-        jComboBox1.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female", "Others" }));
+        genderCMBox.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        genderCMBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female", "Others" }));
 
-        jTextField3.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        nationalityField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
 
-        jTextField4.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        fromField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
 
-        jTextField5.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        toField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        toField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                toFieldActionPerformed(evt);
             }
         });
 
-        jButton6.setBackground(new java.awt.Color(255, 255, 255));
-        jButton6.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(123, 50, 250));
-        jButton6.setText("Generate Passenger ID");
-        jButton6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        jButton6.setFocusPainted(false);
-        jButton6.setFocusable(false);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        idGeneratorBtn.setBackground(new java.awt.Color(255, 255, 255));
+        idGeneratorBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        idGeneratorBtn.setForeground(new java.awt.Color(123, 50, 250));
+        idGeneratorBtn.setText("Generate Passenger ID");
+        idGeneratorBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        idGeneratorBtn.setFocusPainted(false);
+        idGeneratorBtn.setFocusable(false);
+        idGeneratorBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                idGeneratorBtnMouseClicked(evt);
+            }
+        });
+        idGeneratorBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                idGeneratorBtnActionPerformed(evt);
             }
         });
 
         jLabel2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel2.setText("Passenger ID");
 
-        jTextField6.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jTextField6.setEnabled(false);
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        passIDField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        passIDField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                passIDFieldActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        passengerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Passenger ID", "Passenger Name", "Passport Number", "Nationality"
+                "Passenger ID", "Passenger Name", "Passport Number", "Gender", "Nationality", "From", "To"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
+        ));
+        jScrollPane1.setViewportView(passengerTable);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -204,19 +219,19 @@ public class PassengerMainPage extends javax.swing.JFrame {
                             .addComponent(jLabel7))
                         .addGap(24, 24, 24)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jComboBox1, 0, 167, Short.MAX_VALUE)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
-                            .addComponent(jTextField5))
+                            .addComponent(PNameField)
+                            .addComponent(genderCMBox, 0, 167, Short.MAX_VALUE)
+                            .addComponent(PNum)
+                            .addComponent(nationalityField)
+                            .addComponent(fromField)
+                            .addComponent(toField))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(53, 53, 53)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(passIDField, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -231,7 +246,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
                                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(21, 21, 21)
-                                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(idGeneratorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -247,32 +262,32 @@ public class PassengerMainPage extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(PNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(genderCMBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(PNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nationalityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fromField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7))
                         .addGap(28, 28, 28)
-                        .addComponent(jButton6)
+                        .addComponent(idGeneratorBtn)
                         .addGap(27, 27, 27)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(passIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -345,18 +360,113 @@ public class PassengerMainPage extends javax.swing.JFrame {
         new MainPage().setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void toFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_toFieldActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void idGeneratorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idGeneratorBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_idGeneratorBtnActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void passIDFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passIDFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_passIDFieldActionPerformed
 
+    private int currentPassID = 0;
+    private void generatePassID(){
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            st = connection.createStatement();
+            String query = "SELECT MAX(passID) FROM Passengers";
+            System.out.println(currentPassID);
+            rs = st.executeQuery(query);
+            rs.next();
+            currentPassID = rs.getInt(1) + 1;
+            System.out.println(currentPassID);
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        if(PNameField.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
+                genderCMBox.getSelectedIndex() == -1 || nationalityField.getText().isEmpty() || PNum.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else{
+            try {
+                String addPassQuery = "INSERT INTO `Passengers` (passID, pName, Gender, passNum, nationality, from, to, status) VALUES ('"
+                                +
+                                passIDField.getText() + "','" +
+                                PNameField.getText()+ "','" +
+                                genderCMBox.getSelectedItem()+ "','" +
+                                PNum.getText()+ "','" +
+                                nationalityField.getText()+ "','" +
+                                fromField.getText()+ "','" +
+                                toField.getText()+ "','" +
+                                "Unpaid"+ "');";
+                System.out.println(addPassQuery);
+                st.executeUpdate(addPassQuery);
+                clearFields();
+                displayPassengers();
+                JOptionPane.showMessageDialog(null, "Passenger Record added successfully.");
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void idGeneratorBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_idGeneratorBtnMouseClicked
+        // TODO add your handling code here:
+        generatePassID();
+        passIDField.setText(Integer.toString(currentPassID));
+    }//GEN-LAST:event_idGeneratorBtnMouseClicked
+
+    
+    private void clearFields(){
+        PNameField.setText("");
+        fromField.setText("");
+        toField.setText("");
+        genderCMBox.setSelectedItem("Male");
+        passIDField.setText("");
+        nationalityField.setText("");
+        PNum.setText("");
+    }
+    
+    private void displayPassengers(){
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            DefaultTableModel model = (DefaultTableModel) passengerTable.getModel();
+            model.setRowCount(0);
+            if(connection != null){
+                String query = "SELECT * FROM Passengers";
+                pst = connection.prepareStatement(query);
+                rs = pst.executeQuery();
+              
+                Object[] data = new Object[7];
+                while(rs.next()){
+                    data[0] = rs.getString("passID");
+                    data[1] = rs.getString("pName");
+                    data[2] = rs.getString("passNum");
+                    data[3] = rs.getString("Gender");
+                    data[4] = rs.getString("nationality");
+                    data[5] = rs.getString("from");
+                    data[6] = rs.getString("to");
+                    model.addRow(data);
+                }
+            }
+            connection.close();
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -393,13 +503,16 @@ public class PassengerMainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField PNameField;
+    private javax.swing.JTextField PNum;
+    private javax.swing.JTextField fromField;
+    private javax.swing.JComboBox<String> genderCMBox;
+    private javax.swing.JButton idGeneratorBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -412,12 +525,9 @@ public class PassengerMainPage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField nationalityField;
+    private javax.swing.JTextField passIDField;
+    private javax.swing.JTable passengerTable;
+    private javax.swing.JTextField toField;
     // End of variables declaration//GEN-END:variables
 }

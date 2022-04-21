@@ -73,10 +73,10 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        addRecordBtn = new javax.swing.JButton();
+        updateRecordBtn = new javax.swing.JButton();
+        delRecordBtn = new javax.swing.JButton();
+        searchRecordBtn = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -96,6 +96,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         deptTimeField = new javax.swing.JTextField();
         arrTimeField = new javax.swing.JTextField();
+        clearBtn = new javax.swing.JButton();
 
         timePicker1.setForeground(new java.awt.Color(123, 50, 250));
 
@@ -142,52 +143,57 @@ public class FlightsMainPage extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton1.setText("ADD");
-        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton1.setFocusPainted(false);
-        jButton1.setFocusable(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        addRecordBtn.setBackground(new java.awt.Color(255, 255, 255));
+        addRecordBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        addRecordBtn.setText("ADD");
+        addRecordBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        addRecordBtn.setFocusPainted(false);
+        addRecordBtn.setFocusable(false);
+        addRecordBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                addRecordBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
-        jButton2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton2.setText("EDIT");
-        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton2.setFocusPainted(false);
-        jButton2.setFocusable(false);
-        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+        updateRecordBtn.setBackground(new java.awt.Color(255, 255, 255));
+        updateRecordBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        updateRecordBtn.setText("UPDATE");
+        updateRecordBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        updateRecordBtn.setFocusPainted(false);
+        updateRecordBtn.setFocusable(false);
+        updateRecordBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton2MouseClicked(evt);
+                updateRecordBtnMouseClicked(evt);
             }
         });
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        updateRecordBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                updateRecordBtnActionPerformed(evt);
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(255, 255, 255));
-        jButton3.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton3.setText("REMOVE");
-        jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton3.setFocusable(false);
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        delRecordBtn.setBackground(new java.awt.Color(255, 255, 255));
+        delRecordBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        delRecordBtn.setText("DELETE");
+        delRecordBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        delRecordBtn.setFocusable(false);
+        delRecordBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
+                delRecordBtnMouseClicked(evt);
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(255, 255, 255));
-        jButton4.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton4.setText("SEARCH");
-        jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jButton4.setFocusPainted(false);
-        jButton4.setFocusable(false);
+        searchRecordBtn.setBackground(new java.awt.Color(255, 255, 255));
+        searchRecordBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        searchRecordBtn.setText("SEARCH");
+        searchRecordBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        searchRecordBtn.setFocusPainted(false);
+        searchRecordBtn.setFocusable(false);
+        searchRecordBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchRecordBtnMouseClicked(evt);
+            }
+        });
 
         jButton5.setBackground(new java.awt.Color(123, 50, 250));
         jButton5.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
@@ -290,71 +296,88 @@ public class FlightsMainPage extends javax.swing.JFrame {
 
         arrTimeField.setName("arrTime"); // NOI18N
 
+        clearBtn.setBackground(new java.awt.Color(123, 50, 250));
+        clearBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
+        clearBtn.setForeground(new java.awt.Color(255, 255, 255));
+        clearBtn.setText("CLEAR");
+        clearBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(123, 50, 250)));
+        clearBtn.setFocusPainted(false);
+        clearBtn.setFocusable(false);
+        clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                clearBtnMouseClicked(evt);
+            }
+        });
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(updateRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(1, 1, 1)))
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(27, 27, 27)
+                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(delRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(jLabel6)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel7))
+                                        .addGap(18, 18, 18)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(18, 18, 18))
-                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(1, 1, 1)))
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                                        .addGap(27, 27, 27)
-                                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                    .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addComponent(jLabel6)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel8)
-                                                    .addComponent(jLabel7))
-                                                .addGap(18, 18, 18)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(seatsField, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                                                    .addComponent(deptDateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(deptTimeField)
-                                                    .addComponent(arrTimeField))))
-                                        .addGap(10, 10, 10))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(fromField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(FCode, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel4)
+                                            .addComponent(seatsField, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                                            .addComponent(deptDateField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(17, 17, 17)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(28, 28, 28)
-                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(deptTimeField)
+                                            .addComponent(arrTimeField))))
+                                .addGap(10, 10, 10))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(fromField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(FCode, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addComponent(addRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(searchRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -397,14 +420,16 @@ public class FlightsMainPage extends javax.swing.JFrame {
                             .addComponent(priceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(30, 30, 30)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(addRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(updateRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(delRecordBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton5)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5)
+                            .addComponent(clearBtn))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
@@ -430,9 +455,9 @@ public class FlightsMainPage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void updateRecordBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateRecordBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_updateRecordBtnActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
@@ -440,7 +465,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
         new MainPage().setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void addRecordBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRecordBtnActionPerformed
         // TODO add your handling code here: 
         if(FCode.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
                 deptDateField.getDate().toString().isEmpty() || seatsField.getText().isEmpty() || deptTimeField.getText().isEmpty() || arrTimeField.getText().isEmpty() || priceField.getText().isEmpty()){
@@ -449,13 +474,14 @@ public class FlightsMainPage extends javax.swing.JFrame {
         else{
             try {
                 generateFlightID();
+                String date = convertDateToString(deptDateField.getDate());
                 String addFlightQuery = "INSERT INTO `Flights` (FlightId, FCode, Ffrom, Fto, deptDate, seats, deptTime, arrTime, price) VALUES ('"
                                 +
                                 currentFlightID + "','" +
                                 FCode.getText() + "','" +
                                 fromField.getText() + "','" +
                                 toField.getText() + "','" +
-                                deptDateField.getDate().toString() + "','" +
+                                date + "','" +
                                 Integer.parseInt(seatsField.getText()) + "','" +
                                 deptTimeField.getText() + "','" +
                                 arrTimeField.getText() + "','" +
@@ -470,7 +496,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_addRecordBtnActionPerformed
 
     private void clearFields(){
         FCode.setText("");
@@ -501,7 +527,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
     }//GEN-LAST:event_FCodeActionPerformed
     
     int key = 0;
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+    private void delRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_delRecordBtnMouseClicked
         // TODO add your handling code here:
         if(key == 0){
             JOptionPane.showMessageDialog(null, "Please select a record to be deleted.");
@@ -521,7 +547,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
                 Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_jButton3MouseClicked
+    }//GEN-LAST:event_delRecordBtnMouseClicked
 
     private void flightTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flightTableMouseClicked
         // TODO add your handling code here:
@@ -531,16 +557,98 @@ public class FlightsMainPage extends javax.swing.JFrame {
         FCode.setText(model.getValueAt(tableIndex, 1).toString());
         fromField.setText(model.getValueAt(tableIndex, 2).toString());
         toField.setText(model.getValueAt(tableIndex, 3).toString());
+        //            deptDateField.setDate(convertStringToDate(model.getValueAt(tableIndex, 4).toString()));
         seatsField.setText(model.getValueAt(tableIndex, 5).toString());
         deptTimeField.setText(model.getValueAt(tableIndex, 6).toString());
         arrTimeField.setText(model.getValueAt(tableIndex, 7).toString());
         priceField.setText(model.getValueAt(tableIndex, 8).toString());
     }//GEN-LAST:event_flightTableMouseClicked
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+    private void updateRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateRecordBtnMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2MouseClicked
+        if(FCode.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
+                deptDateField.getDate().toString().isEmpty() || seatsField.getText().isEmpty() || deptTimeField.getText().isEmpty() || arrTimeField.getText().isEmpty() || priceField.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else{
+            if(key == 0){
+                JOptionPane.showMessageDialog(null, "Please select a record to be updated.");
+            }   
+            else{
+                try {
+                    java.sql.DriverManager.registerDriver(new JDBC());
+                    connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+                    String date= convertDateToString(deptDateField.getDate());
+                    
+                    String updateQuery = "UPDATE Flights SET FlightID ="+key+", FCode ="+ '"' +FCode.getText()+ '"' +", Ffrom ="+ '"' +fromField.getText()+ '"' +
+                            ", Fto ="+ '"' + toField.getText()+ '"' +", deptDate ="+ '"' +date+ '"' +", Seats ="+Integer.parseInt(seatsField.getText())+
+                            ", deptTime ="+ '"' +deptTimeField.getText()+ '"' +", arrTime ="+ '"' +arrTimeField.getText()+ '"' +", price ="+Integer.parseInt(priceField.getText())+" WHERE FlightID ="+key+";";
+                    System.out.println(updateQuery);
 
+                    pst = connection.prepareStatement(updateQuery);
+                    pst.executeUpdate();
+                    displayFlights();
+                    clearFields();
+                    JOptionPane.showMessageDialog(null, "Record of flight updated successfully.");
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_updateRecordBtnMouseClicked
+
+    private void searchRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchRecordBtnMouseClicked
+        // TODO add your handling code here:
+        try{
+            java.sql.DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
+            String searchQuery = "SELECT * FROM FLIGHTS WHERE FCode ="+ '"' +FCode.getText()+ '"' +";";
+              System.out.println(searchQuery);
+            pst = connection.prepareStatement(searchQuery);
+            rs = pst.executeQuery();
+            FCode.setText(FCode.getText());
+            fromField.setText(rs.getString(2));
+            toField.setText(rs.getString(3));
+            seatsField.setText(rs.getString(5));
+            try {
+                Date d = convertStringToDate(rs.getString(4));
+                deptDateField.setDate(d);
+            } catch (ParseException ex) {
+                Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            deptTimeField.setText(rs.getString(6));
+            arrTimeField.setText(rs.getString(7));
+            priceField.setText(rs.getString(8));
+        } catch (SQLException ex) {
+            Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }//GEN-LAST:event_searchRecordBtnMouseClicked
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
+        // TODO add your handling code here:
+        clearFields();
+    }//GEN-LAST:event_clearBtnMouseClicked
+
+    private Date convertStringToDate(String date) throws ParseException{
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy");
+        Date ddate = formatter.parse(date);
+        System.out.println(ddate);
+        return ddate;
+    }
+    
+    private String convertDateToString(Date date) throws ParseException{
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d, yyyy");
+        String ddate = formatter.format(date);
+        return ddate;
+    }
     
     
     private void displayFlights(){
@@ -630,15 +738,14 @@ public class FlightsMainPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField FCode;
+    private javax.swing.JButton addRecordBtn;
     private javax.swing.JTextField arrTimeField;
+    private javax.swing.JButton clearBtn;
+    private javax.swing.JButton delRecordBtn;
     private com.toedter.calendar.JDateChooser deptDateField;
     private javax.swing.JTextField deptTimeField;
     private javax.swing.JTable flightTable;
     private javax.swing.JTextField fromField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -654,9 +761,11 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField priceField;
+    private javax.swing.JButton searchRecordBtn;
     private javax.swing.JTextField seatsField;
     private com.raven.swing.TimePicker timePicker1;
     private com.raven.swing.TimePicker timePicker2;
     private javax.swing.JTextField toField;
+    private javax.swing.JButton updateRecordBtn;
     // End of variables declaration//GEN-END:variables
 }
