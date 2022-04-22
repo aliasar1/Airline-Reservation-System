@@ -180,6 +180,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jLabel8.setText("Nationality");
 
         PNameField.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        PNameField.setAutoscrolls(false);
 
         PNum.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
 
@@ -581,7 +582,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
         try{
             java.sql.DriverManager.registerDriver(new JDBC());
             connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
-            String searchQuery = "SELECT * FROM Passengers WHERE passNum ="+ '"' +PNum.getText()+ '"' +";";
+            String searchQuery = "SELECT * FROM Passengers WHERE passNum ="+ '"' +PNum.getText()+ '"' + " OR passID ="+ '"' +passIDField.getText()+ '"' +";";
             System.out.println(searchQuery);
             pst = connection.prepareStatement(searchQuery);
             rs = pst.executeQuery();

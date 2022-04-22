@@ -609,6 +609,10 @@ public class FlightsMainPage extends javax.swing.JFrame {
               System.out.println(searchQuery);
             pst = connection.prepareStatement(searchQuery);
             rs = pst.executeQuery();
+            if(!rs.next()){
+                JOptionPane.showMessageDialog(this, "No record found.");
+                return;
+            }
             FCode.setText(FCode.getText());
             fromField.setText(rs.getString(2));
             toField.setText(rs.getString(3));
