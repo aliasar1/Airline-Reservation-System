@@ -8,7 +8,6 @@ package airline.reservation.system;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 import org.sqlite.JDBC;
 
@@ -22,8 +21,8 @@ public class AirlineReservationSystem {
      * @param args the command line arguments
      */
     
-    private static Statement statement = null; // For ease of use
-    private static Connection connection;
+    public static Statement statement = null; // For ease of use
+    public static Connection connection;
     
     public static void main(String[] args) {
         // TODO code application logic here

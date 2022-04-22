@@ -26,10 +26,10 @@ public class BookingMainPage extends javax.swing.JFrame {
     /**
      * Creates new form BookingMainPage
      */
-    private Connection connection;
+    private Connection connection = AirlineReservationSystem.connection;
     ResultSet rs = null;
     PreparedStatement pst = null;
-    Statement st = null;
+    Statement st = AirlineReservationSystem.statement;
      boolean testActionListenerActive = false;
     
     public BookingMainPage() {
@@ -394,13 +394,11 @@ public class BookingMainPage extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(testActionListenerActive){
             try {
-               connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
-               st = connection.createStatement();
                String query = "SELECT * FROM Flights WHERE FlightId ="+fIdCMBox1.getSelectedItem();
                System.out.println(query);
                rs = st.executeQuery(query);
                amountField.setText(rs.getString("price"));
-               connection.close();
+             
            } catch (SQLException ex) {
                Logger.getLogger(BookingMainPage.class.getName()).log(Level.SEVERE, null, ex);
            } 
@@ -416,21 +414,21 @@ public class BookingMainPage extends javax.swing.JFrame {
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         if(passIDField.getText().isEmpty() || pNameField.getText().isEmpty() || fIdCMBox1.getSelectedIndex() == -1 || 
-                genderField.getText().isEmpty() || nationalityField1.getText().isEmpty() || pNumField1.getText().isEmpty() || amountField.getText().isEmpty() || statusCMBox.getSelectedItem() != "Paid"){
+                genderField.getText().isEmpty() || nationalityField1.getText().isEmpty() || pNumField1.getText().isEmpty() || amountField.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else if(statusCMBox.getSelectedItem() != "Paid"){
+            JOptionPane.showMessageDialog(null, "Please update the status to Paid.");
         }
         else{
             try {
-                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
-                
-                String updateQuery = "UPDATE Passengers SET status="+ '"' +"Paid"+ '"' + ", amountPaid = " + amountField.getText() + ", flightId =" + '"' + fIdCMBox1.getSelectedItem() + '"'  + "WHERE passID = "+ '"' +passIDField.getText()+ '"';
+                String updateQuery = "UPDATE Passengers SET status="+ '"' +"Paid"+ '"' + ", amountPaid = " + amountField.getText() + ", flightId =" + '"' + fIdCMBox1.getSelectedItem() + '"'  + " WHERE passID = "+ '"' +passIDField.getText()+ '"';
                     System.out.println(updateQuery);
                     pst = connection.prepareStatement(updateQuery);
                     pst.executeUpdate();
                     displayBookingDetails();
                     clearFields();
-                    JOptionPane.showMessageDialog(null, "Booking successfully completed.");    
-                    connection.close();
+                    JOptionPane.showMessageDialog(null, "Booking successfully completed.");         
                 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -440,7 +438,6 @@ public class BookingMainPage extends javax.swing.JFrame {
 
     private void displayBookingDetails(){
          try{
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             DefaultTableModel model = (DefaultTableModel) bookingTable.getModel();
             model.setRowCount(0);
             if(connection != null){
@@ -460,7 +457,6 @@ public class BookingMainPage extends javax.swing.JFrame {
                     model.addRow(data);
                 }
             }
-            connection.close();
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -478,8 +474,6 @@ public class BookingMainPage extends javax.swing.JFrame {
     
     private void getFlightsIds(){
         try {
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             st = connection.createStatement();
             String query = "SELECT * FROM Flights";
             rs = st.executeQuery(query);
@@ -489,7 +483,6 @@ public class BookingMainPage extends javax.swing.JFrame {
                 fIdCMBox1.addItem(fID);
             }
             testActionListenerActive = true;
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookingMainPage.class.getName()).log(Level.SEVERE, null, ex);
         }  
@@ -499,7 +492,6 @@ public class BookingMainPage extends javax.swing.JFrame {
         String query = "SELECT * FROM Passengers WHERE passID =" + '"' + passIDField.getText()+ '"' + ";";
        
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             st = connection.createStatement();
             
             rs = st.executeQuery(query);
@@ -514,7 +506,6 @@ public class BookingMainPage extends javax.swing.JFrame {
                 clearFields();
                 JOptionPane.showMessageDialog(this, "No record found.");
             }
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(BookingMainPage.class.getName()).log(Level.SEVERE, null, ex);
         }

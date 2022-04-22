@@ -7,12 +7,10 @@ package airline.reservation.system;
 
 import com.raven.event.EventTimePicker;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.sqlite.JDBC;
 
 /**
  *
@@ -32,10 +29,10 @@ public class FlightsMainPage extends javax.swing.JFrame {
      * Creates new form FlightsMainPage
      */
     
-    private Connection connection;
+    private Connection connection = AirlineReservationSystem.connection;
     ResultSet rs = null;
     PreparedStatement pst = null;
-    Statement st = null;
+    Statement st = AirlineReservationSystem.statement;
    
     public FlightsMainPage() {
         initComponents();
@@ -491,7 +488,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
                 clearFields();
                 displayFlights();
                 JOptionPane.showMessageDialog(null, "Flight Record added successfully.");
-                connection.close();
+               
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -534,15 +531,13 @@ public class FlightsMainPage extends javax.swing.JFrame {
         }   
         else{
             try {
-                java.sql.DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
                 String delQuery = "DELETE FROM Flights WHERE FlightID = " + key + ";";
                 pst = connection.prepareStatement(delQuery);
                 pst.executeUpdate();
                 displayFlights();
                 clearFields();
                 JOptionPane.showMessageDialog(null, "Record of flight deleted successfully.");
-                connection.close();
+           
             } catch (SQLException ex) {
                 Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -567,8 +562,11 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private void updateRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateRecordBtnMouseClicked
         // TODO add your handling code here:
         if(FCode.getText().isEmpty() || fromField.getText().isEmpty() || toField.getText().isEmpty() || 
-                deptDateField.getDate().toString().isEmpty() || seatsField.getText().isEmpty() || deptTimeField.getText().isEmpty() || arrTimeField.getText().isEmpty() || priceField.getText().isEmpty()){
+                seatsField.getText().isEmpty() || deptTimeField.getText().isEmpty() || arrTimeField.getText().isEmpty() || priceField.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Please enter all the information.");
+        }
+        else if(deptDateField.getDate().toString().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Please flight date.");
         }
         else{
             if(key == 0){
@@ -576,8 +574,6 @@ public class FlightsMainPage extends javax.swing.JFrame {
             }   
             else{
                 try {
-                    java.sql.DriverManager.registerDriver(new JDBC());
-                    connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
                     String date= convertDateToString(deptDateField.getDate());
                     
                     String updateQuery = "UPDATE Flights SET FlightID ="+key+", FCode ="+ '"' +FCode.getText()+ '"' +", Ffrom ="+ '"' +fromField.getText()+ '"' +
@@ -590,7 +586,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
                     displayFlights();
                     clearFields();
                     JOptionPane.showMessageDialog(null, "Record of flight updated successfully.");
-                    connection.close();
+                  
                 } catch (SQLException ex) {
                     Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ParseException ex) {
@@ -603,8 +599,6 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private void searchRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchRecordBtnMouseClicked
         // TODO add your handling code here:
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             String searchQuery = "SELECT * FROM FLIGHTS WHERE FCode ="+ '"' +FCode.getText()+ '"' +";";
               System.out.println(searchQuery);
             pst = connection.prepareStatement(searchQuery);
@@ -626,7 +620,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
             deptTimeField.setText(rs.getString(6));
             arrTimeField.setText(rs.getString(7));
             priceField.setText(rs.getString(8));
-            connection.close();
+        
         } catch (SQLException ex) {
             Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -658,8 +652,6 @@ public class FlightsMainPage extends javax.swing.JFrame {
     
     private void displayFlights(){
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             DefaultTableModel model = (DefaultTableModel) flightTable.getModel();
             model.setRowCount(0);
             if(connection != null){
@@ -675,13 +667,12 @@ public class FlightsMainPage extends javax.swing.JFrame {
                     data[3] = rs.getString("Fto");
                     data[4] = rs.getString("deptDate");
                     data[5] = rs.getString("Seats");
-                    data[6] = rs.getString("deptTIme");
-                    data[7] = rs.getString("arrTime");
-                    data[8] = rs.getString("price");
+                    data[6] = rs.getString("price");
+                    data[7] = rs.getString("deptTime");
+                    data[8] = rs.getString("arrTime");
                     model.addRow(data);
                 }
             }
-            connection.close();
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -691,8 +682,6 @@ public class FlightsMainPage extends javax.swing.JFrame {
     private int currentFlightID = 0;
     private void generateFlightID(){
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             st = connection.createStatement();
             String query = "SELECT MAX(FlightID) FROM Flights";
             System.out.println(currentFlightID);

@@ -6,18 +6,14 @@
 package airline.reservation.system;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.sqlite.JDBC;
 
 /**
  *
@@ -28,10 +24,10 @@ public class PassengerMainPage extends javax.swing.JFrame {
     /**
      * Creates new form PassengerMainPage
      */
-    private Connection connection;
     ResultSet rs = null;
     PreparedStatement pst = null;
-    Statement st = null;
+    Statement st = AirlineReservationSystem.statement;
+    Connection connection = AirlineReservationSystem.connection;
     int key = 0;  
     
     public PassengerMainPage() {
@@ -56,7 +52,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        backBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -69,12 +65,13 @@ public class PassengerMainPage extends javax.swing.JFrame {
         nationalityField = new javax.swing.JTextField();
         fromField = new javax.swing.JTextField();
         toField = new javax.swing.JTextField();
-        idGeneratorBtn = new javax.swing.JButton();
+        suggestionBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         passIDField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         passengerTable = new javax.swing.JTable();
         clearBtn = new javax.swing.JButton();
+        idGeneratorBtn1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -148,16 +145,16 @@ public class PassengerMainPage extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(123, 50, 250));
-        jButton5.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("BACK");
-        jButton5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(123, 50, 250)));
-        jButton5.setFocusPainted(false);
-        jButton5.setFocusable(false);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        backBtn.setBackground(new java.awt.Color(123, 50, 250));
+        backBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        backBtn.setForeground(new java.awt.Color(255, 255, 255));
+        backBtn.setText("BACK");
+        backBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(123, 50, 250)));
+        backBtn.setFocusPainted(false);
+        backBtn.setFocusable(false);
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                backBtnActionPerformed(evt);
             }
         });
 
@@ -198,21 +195,21 @@ public class PassengerMainPage extends javax.swing.JFrame {
             }
         });
 
-        idGeneratorBtn.setBackground(new java.awt.Color(255, 255, 255));
-        idGeneratorBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
-        idGeneratorBtn.setForeground(new java.awt.Color(123, 50, 250));
-        idGeneratorBtn.setText("Generate Passenger ID");
-        idGeneratorBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
-        idGeneratorBtn.setFocusPainted(false);
-        idGeneratorBtn.setFocusable(false);
-        idGeneratorBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        suggestionBtn.setBackground(new java.awt.Color(255, 255, 255));
+        suggestionBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        suggestionBtn.setForeground(new java.awt.Color(123, 50, 250));
+        suggestionBtn.setText("SHOW FLIGHT SUGGESTIONS");
+        suggestionBtn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        suggestionBtn.setFocusPainted(false);
+        suggestionBtn.setFocusable(false);
+        suggestionBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                idGeneratorBtnMouseClicked(evt);
+                suggestionBtnMouseClicked(evt);
             }
         });
-        idGeneratorBtn.addActionListener(new java.awt.event.ActionListener() {
+        suggestionBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                idGeneratorBtnActionPerformed(evt);
+                suggestionBtnActionPerformed(evt);
             }
         });
 
@@ -259,6 +256,24 @@ public class PassengerMainPage extends javax.swing.JFrame {
             }
         });
 
+        idGeneratorBtn1.setBackground(new java.awt.Color(255, 255, 255));
+        idGeneratorBtn1.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
+        idGeneratorBtn1.setForeground(new java.awt.Color(123, 50, 250));
+        idGeneratorBtn1.setText("Generate Passenger ID");
+        idGeneratorBtn1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        idGeneratorBtn1.setFocusPainted(false);
+        idGeneratorBtn1.setFocusable(false);
+        idGeneratorBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                idGeneratorBtn1MouseClicked(evt);
+            }
+        });
+        idGeneratorBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idGeneratorBtn1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -290,19 +305,18 @@ public class PassengerMainPage extends javax.swing.JFrame {
                                 .addGap(53, 53, 53)
                                 .addComponent(passIDField, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(idGeneratorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(suggestionBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(idGeneratorBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -339,13 +353,15 @@ public class PassengerMainPage extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(toField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7))
-                        .addGap(28, 28, 28)
-                        .addComponent(idGeneratorBtn)
-                        .addGap(27, 27, 27)
+                        .addGap(29, 29, 29)
+                        .addComponent(suggestionBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(idGeneratorBtn1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(passIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -355,7 +371,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 19, Short.MAX_VALUE))))
         );
@@ -412,19 +428,19 @@ public class PassengerMainPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
         // TODO add your handling code here:
         dispose();
         new MainPage().setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_backBtnActionPerformed
 
     private void toFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_toFieldActionPerformed
 
-    private void idGeneratorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idGeneratorBtnActionPerformed
+    private void suggestionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suggestionBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_idGeneratorBtnActionPerformed
+    }//GEN-LAST:event_suggestionBtnActionPerformed
 
     private void passIDFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passIDFieldActionPerformed
         // TODO add your handling code here:
@@ -433,8 +449,6 @@ public class PassengerMainPage extends javax.swing.JFrame {
     private int currentPassID = 0;
     private void generatePassID(){
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             st = connection.createStatement();
             String query = "SELECT MAX(passID) FROM Passengers";
             System.out.println(currentPassID);
@@ -442,6 +456,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
             rs.next();
             currentPassID = rs.getInt(1) + 1;
             System.out.println(currentPassID);
+            passIDField.setText(Integer.toString(currentPassID));
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -456,9 +471,6 @@ public class PassengerMainPage extends javax.swing.JFrame {
         }
         else{
             try {
-                java.sql.DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
-                
                 String addPassQuery = "INSERT INTO `Passengers` (passID, pName, Gender, passNum, nationality, Pfrom, Pto, status) VALUES ('"
                                 +
                                 passIDField.getText() + "','" +
@@ -473,7 +485,6 @@ public class PassengerMainPage extends javax.swing.JFrame {
                 st.executeUpdate(addPassQuery);
                 clearFields();
                 displayPassengers();
-                connection.close();
                 JOptionPane.showMessageDialog(null, "Passenger Record added successfully.");     
             } catch (Exception e) {
                 e.printStackTrace();
@@ -482,11 +493,12 @@ public class PassengerMainPage extends javax.swing.JFrame {
     
     }//GEN-LAST:event_jButton1MouseClicked
 
-    private void idGeneratorBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_idGeneratorBtnMouseClicked
+    private void suggestionBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_suggestionBtnMouseClicked
         // TODO add your handling code here:
-        generatePassID();
-        passIDField.setText(Integer.toString(currentPassID));
-    }//GEN-LAST:event_idGeneratorBtnMouseClicked
+        String from = fromField.getText();
+        String to = toField.getText();
+        new SuggestionsPage(from, to).setVisible(true);
+    }//GEN-LAST:event_suggestionBtnMouseClicked
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
@@ -522,15 +534,13 @@ public class PassengerMainPage extends javax.swing.JFrame {
         }   
         else{
             try {
-                java.sql.DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
                 String delQuery = "DELETE FROM Passengers WHERE PassID = " + key + ";";
                 pst = connection.prepareStatement(delQuery);
                 pst.executeUpdate();
                 displayPassengers();
                 clearFields();
                 JOptionPane.showMessageDialog(null, "Record of passenger deleted successfully.");
-                connection.close();
+              
             } catch (SQLException ex) {
                 Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -553,11 +563,8 @@ public class PassengerMainPage extends javax.swing.JFrame {
             }   
             else{
                 try {
-                    java.sql.DriverManager.registerDriver(new JDBC());
-                    connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
-                    
                     String updateQuery = "UPDATE Passengers SET pName ="+ '"' +PNameField.getText()+ '"' + ", Gender="+ '"' +genderCMBox.getSelectedItem()+ '"' +
-                            ", nationality="+ '"' +nationalityField.getText()+ '"' +", Pfrom="+ '"' +fromField.getText()+ '"' +", Pto="+ '"' +toField.getText()+ '"' +", status="+ '"' +"Unpaid"+ '"' +" WHERE passID ="+ '"' +key+ '"' +";";
+                            ", nationality="+ '"' +nationalityField.getText()+ '"' +", Pfrom="+ '"' +fromField.getText()+ '"' +", Pto="+ '"' +toField.getText()+ '"' +", status="+ '"' +"Unpaid"+ '"' + ", passNum ="+ '"' + PNum.getText()+'"'+" WHERE passID ="+ '"' +key+ '"' +";";
                     System.out.println(updateQuery);
 
                     pst = connection.prepareStatement(updateQuery);
@@ -565,7 +572,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
                     displayPassengers();
                     clearFields();
                     JOptionPane.showMessageDialog(null, "Record of passenger updated successfully.");
-                    connection.close();
+                 
                 } catch (SQLException ex) {
                     Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -580,23 +587,30 @@ public class PassengerMainPage extends javax.swing.JFrame {
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         // TODO add your handling code here:
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             String searchQuery = "SELECT * FROM Passengers WHERE passNum ="+ '"' +PNum.getText()+ '"' + " OR passID ="+ '"' +passIDField.getText()+ '"' +";";
             System.out.println(searchQuery);
             pst = connection.prepareStatement(searchQuery);
             rs = pst.executeQuery();
             passIDField.setText(rs.getString(7));
+            PNum.setText(rs.getString("passNum"));
             PNameField.setText(rs.getString(1));
             genderCMBox.setSelectedItem(rs.getString(2));
             nationalityField.setText(rs.getString(4));
             fromField.setText(rs.getString(5));
             toField.setText(rs.getString(6));
-            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(FlightsMainPage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton4MouseClicked
+
+    private void idGeneratorBtn1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_idGeneratorBtn1MouseClicked
+        // TODO add your handling code here:
+        generatePassID();
+    }//GEN-LAST:event_idGeneratorBtn1MouseClicked
+
+    private void idGeneratorBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idGeneratorBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_idGeneratorBtn1ActionPerformed
 
     
     private void clearFields(){
@@ -611,8 +625,6 @@ public class PassengerMainPage extends javax.swing.JFrame {
     
     private void displayPassengers(){
         try{
-            java.sql.DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:airlineDB.db");
             DefaultTableModel model = (DefaultTableModel) passengerTable.getModel();
             model.setRowCount(0);
             if(connection != null){
@@ -632,7 +644,6 @@ public class PassengerMainPage extends javax.swing.JFrame {
                     model.addRow(data);
                 }
             }
-            connection.close();
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
@@ -677,15 +688,15 @@ public class PassengerMainPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField PNameField;
     private javax.swing.JTextField PNum;
+    private javax.swing.JButton backBtn;
     private javax.swing.JButton clearBtn;
     private javax.swing.JTextField fromField;
     private javax.swing.JComboBox<String> genderCMBox;
-    private javax.swing.JButton idGeneratorBtn;
+    private javax.swing.JButton idGeneratorBtn1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -701,6 +712,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
     private javax.swing.JTextField nationalityField;
     private javax.swing.JTextField passIDField;
     private javax.swing.JTable passengerTable;
+    private javax.swing.JButton suggestionBtn;
     private javax.swing.JTextField toField;
     // End of variables declaration//GEN-END:variables
 }
