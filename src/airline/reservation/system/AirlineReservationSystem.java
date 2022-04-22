@@ -30,7 +30,6 @@ public class AirlineReservationSystem {
         connect();
     }
     
-    
     public static void connect() {
         File dbFile = new File("airlineDB.db");
         boolean dbCreated = dbFile.exists();

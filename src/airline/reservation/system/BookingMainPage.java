@@ -57,7 +57,7 @@ public class BookingMainPage extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        bookBtn = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -134,15 +134,15 @@ public class BookingMainPage extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         jLabel6.setText("Passport Number");
 
-        jButton1.setBackground(new java.awt.Color(123, 50, 250));
-        jButton1.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("BOOK");
-        jButton1.setFocusPainted(false);
-        jButton1.setFocusable(false);
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        bookBtn.setBackground(new java.awt.Color(123, 50, 250));
+        bookBtn.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
+        bookBtn.setForeground(new java.awt.Color(255, 255, 255));
+        bookBtn.setText("BOOK");
+        bookBtn.setFocusPainted(false);
+        bookBtn.setFocusable(false);
+        bookBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                bookBtnMouseClicked(evt);
             }
         });
 
@@ -287,7 +287,7 @@ public class BookingMainPage extends javax.swing.JFrame {
                         .addGap(92, 92, 92)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton2)
-                            .addComponent(jButton1))
+                            .addComponent(bookBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
                 .addGap(13, 13, 13))
@@ -339,7 +339,7 @@ public class BookingMainPage extends javax.swing.JFrame {
                             .addComponent(jLabel7))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
+                            .addComponent(bookBtn)
                             .addComponent(cancelBtn))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -411,7 +411,7 @@ public class BookingMainPage extends javax.swing.JFrame {
         
     }//GEN-LAST:event_fIdCMBox1MouseClicked
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void bookBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookBtnMouseClicked
         // TODO add your handling code here:
         if(passIDField.getText().isEmpty() || pNameField.getText().isEmpty() || fIdCMBox1.getSelectedIndex() == -1 || 
                 genderField.getText().isEmpty() || nationalityField1.getText().isEmpty() || pNumField1.getText().isEmpty() || amountField.getText().isEmpty()){
@@ -422,19 +422,31 @@ public class BookingMainPage extends javax.swing.JFrame {
         }
         else{
             try {
-                String updateQuery = "UPDATE Passengers SET status="+ '"' +"Paid"+ '"' + ", amountPaid = " + amountField.getText() + ", flightId =" + '"' + fIdCMBox1.getSelectedItem() + '"'  + " WHERE passID = "+ '"' +passIDField.getText()+ '"';
+                String checkSeats = "SELECT Seats FROM Flights WHERE flightId =" + fIdCMBox1.getSelectedItem();
+                pst = connection.prepareStatement(checkSeats);
+                rs = pst.executeQuery();
+                int seats = Integer.parseInt(rs.getString("Seats"));
+                if(seats > 0){
+                    String reserveSeat = "UPDATE Flights SET Seats = Seats - 1 WHERE flightId =" + fIdCMBox1.getSelectedItem();
+                    System.out.println(reserveSeat);
+                    pst = connection.prepareStatement(reserveSeat);
+                    pst.executeUpdate();
+                    String updateQuery = "UPDATE Passengers SET status="+ '"' +"Paid"+ '"' + ", amountPaid = " + amountField.getText() + ", flightId =" + '"' + fIdCMBox1.getSelectedItem() + '"'  + " WHERE passID = "+ '"' +passIDField.getText()+ '"';
                     System.out.println(updateQuery);
                     pst = connection.prepareStatement(updateQuery);
                     pst.executeUpdate();
                     displayBookingDetails();
                     clearFields();
                     JOptionPane.showMessageDialog(null, "Booking successfully completed.");         
-                
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Sorry, No seats available.");    
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_bookBtnMouseClicked
 
     private void displayBookingDetails(){
          try{
@@ -548,11 +560,11 @@ public class BookingMainPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel amount;
     private javax.swing.JTextField amountField;
+    private javax.swing.JButton bookBtn;
     private javax.swing.JTable bookingTable;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JComboBox<String> fIdCMBox1;
     private javax.swing.JTextField genderField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;

@@ -554,9 +554,9 @@ public class FlightsMainPage extends javax.swing.JFrame {
         toField.setText(model.getValueAt(tableIndex, 3).toString());
         //            deptDateField.setDate(convertStringToDate(model.getValueAt(tableIndex, 4).toString()));
         seatsField.setText(model.getValueAt(tableIndex, 5).toString());
-        deptTimeField.setText(model.getValueAt(tableIndex, 6).toString());
-        arrTimeField.setText(model.getValueAt(tableIndex, 7).toString());
-        priceField.setText(model.getValueAt(tableIndex, 8).toString());
+        deptTimeField.setText(model.getValueAt(tableIndex, 7).toString());
+        arrTimeField.setText(model.getValueAt(tableIndex, 8).toString());
+        priceField.setText(model.getValueAt(tableIndex, 6).toString());
     }//GEN-LAST:event_flightTableMouseClicked
 
     private void updateRecordBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateRecordBtnMouseClicked
