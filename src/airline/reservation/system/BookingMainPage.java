@@ -117,6 +117,11 @@ public class BookingMainPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        bookingTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bookingTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(bookingTable);
 
         jLabel2.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
@@ -227,6 +232,11 @@ public class BookingMainPage extends javax.swing.JFrame {
         cancelBtn.setText("CANCEL");
         cancelBtn.setFocusPainted(false);
         cancelBtn.setFocusable(false);
+        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cancelBtnMouseClicked(evt);
+            }
+        });
 
         amount.setFont(new java.awt.Font("Trebuchet MS", 1, 14)); // NOI18N
         amount.setText("Amount");
@@ -448,6 +458,40 @@ public class BookingMainPage extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bookBtnMouseClicked
 
+    private void cancelBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelBtnMouseClicked
+        // TODO add your handling code here:
+        try{
+            String cancelQuery = "UPDATE Passengers SET status = "+'"'+"Unpaid"+'"'+", flightId = NULL, amountPaid = NULL WHERE passID ="+'"'+passIDField.getText()+'"';
+            System.out.println(cancelQuery);
+            pst = connection.prepareStatement(cancelQuery);
+            pst.executeUpdate();
+            String unreversveSeat = "UPDATE Flights SET Seats = Seats + 1 WHERE flightId =" + fIdCMBox1.getSelectedItem();
+            System.out.println(unreversveSeat);
+            pst = connection.prepareStatement(unreversveSeat);
+            pst.executeUpdate();
+            displayBookingDetails();
+            clearFields();
+            JOptionPane.showMessageDialog(null, "Flight is successfully cancelled.");   
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_cancelBtnMouseClicked
+
+    private void bookingTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookingTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) bookingTable.getModel();
+        int tableIndex = bookingTable.getSelectedRow();
+        passIDField.setText(model.getValueAt(tableIndex, 0).toString());
+        pNameField.setText(model.getValueAt(tableIndex, 1).toString());
+        fIdCMBox1.setSelectedItem(model.getValueAt(tableIndex, 2).toString());
+        genderField.setText(model.getValueAt(tableIndex, 3).toString());
+        pNumField1.setText(model.getValueAt(tableIndex, 4).toString());
+        nationalityField1.setText(model.getValueAt(tableIndex, 5).toString());
+        statusCMBox.setSelectedItem(model.getValueAt(tableIndex, 6).toString());
+    }//GEN-LAST:event_bookingTableMouseClicked
+ 
+    
     private void displayBookingDetails(){
          try{
             DefaultTableModel model = (DefaultTableModel) bookingTable.getModel();
