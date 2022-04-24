@@ -29,7 +29,7 @@ public class FlightsMainPage extends javax.swing.JFrame {
      * Creates new form FlightsMainPage
      */
     
-    private Connection connection = AirlineReservationSystem.connection;
+    private final Connection connection = AirlineReservationSystem.connection;
     ResultSet rs = null;
     PreparedStatement pst = null;
     Statement st = AirlineReservationSystem.statement;

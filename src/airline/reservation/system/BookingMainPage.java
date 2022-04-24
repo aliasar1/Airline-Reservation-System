@@ -6,7 +6,6 @@
 package airline.reservation.system;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.sqlite.JDBC;
 
 /**
  *
@@ -26,7 +24,7 @@ public class BookingMainPage extends javax.swing.JFrame {
     /**
      * Creates new form BookingMainPage
      */
-    private Connection connection = AirlineReservationSystem.connection;
+    private final Connection connection = AirlineReservationSystem.connection;
     ResultSet rs = null;
     PreparedStatement pst = null;
     Statement st = AirlineReservationSystem.statement;
@@ -471,7 +469,7 @@ public class BookingMainPage extends javax.swing.JFrame {
             pst.executeUpdate();
             displayBookingDetails();
             clearFields();
-            JOptionPane.showMessageDialog(null, "Flight is successfully cancelled.");   
+            JOptionPane.showMessageDialog(null, "Flight booking is cancelled sussussfully..");   
         }
         catch(Exception ex){
             System.out.println(ex.getMessage());
