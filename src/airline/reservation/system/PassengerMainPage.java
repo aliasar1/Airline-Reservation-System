@@ -452,6 +452,7 @@ public class PassengerMainPage extends javax.swing.JFrame {
             rs = st.executeQuery(query);
             while(rs.next()){
                 String from1 = rs.getString("Ffrom");
+                System.err.println(from1);
                 fromCMBox.addItem(from1);
             }
         } catch (SQLException ex) {
